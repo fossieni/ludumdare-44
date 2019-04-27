@@ -6,7 +6,7 @@ function Actor:init(w, h, tileSetFile, tileSetModulo, scale)
     setmetatable(actor,Actor)
 
     
-    actor.pos = {x=0, y=0, offsetX=-3, offsetY=-3}
+    actor.pos = {x=0, y=0, offsetX=3, offsetY=3}
     actor.currentAnim = 1
     actor.width = 0
     actor.tileWidth = w
@@ -69,7 +69,7 @@ function Actor:draw()
     love.graphics.setColor(1,1,1,1)
     love.graphics.push()
     love.graphics.scale(self.scaleX, self.scaleY)
-    love.graphics.draw(self.canvas, self.pos.x+self.pos.offsetX, self.pos.y+self.pos.offsetY)
+    love.graphics.draw(self.canvas, self.pos.x-self.pos.offsetX, self.pos.y-self.pos.offsetY)
     love.graphics.pop()
 end
 

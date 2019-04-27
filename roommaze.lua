@@ -57,6 +57,9 @@ function Roommaze:init(bump)
     room.backgroundTiles.walls = {}
     room.doors = {}
 
+    room.offsetX = (love.graphics.getWidth()/CONFIG.renderer.scale/2) - (levelData.layers[1].width*levelData.tilesets[1].tilewidth/2)
+    room.offsetY = (love.graphics.getHeight()/CONFIG.renderer.scale/2) - (levelData.layers[1].height*levelData.tilesets[1].tileheight/2)
+
     for i, tile in pairs(levelData.layers[1].data) do
         if tile == 27 then
             local doorx = ((i-1) % room.backgroundTiles.mapWidth) * room.backgroundTiles.tileWidth
@@ -93,9 +96,14 @@ function Roommaze:init(bump)
     local devadv = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
     table.insert(room.actors, playerActor)
     table.insert(room.actors, devadv)
-    room.actors[2]:moveActor(60, 60)
+    room.actors[1]:moveActor(room.backgroundTiles.tileWidth*4+3, room.backgroundTiles.tileHeight*8+3)
+    room.actors[2]:moveActor(room.backgroundTiles.tileWidth*4+3, room.backgroundTiles.tileHeight*5)
 
     return room
+end
+
+function Roommaze:barterChoosen()
+    self.talkDevadv = false
 end
 
 function Roommaze:revealDoors()
@@ -136,6 +144,9 @@ function Roommaze:update(dt)
 end
 
 function Roommaze:draw()
+    love.graphics.push()
+    love.graphics.translate(self.offsetX, self.offsetY)
+
     if self.talkDevadv == true then
         --DRAW all the menu stuff
         self.actors[2]:draw()
@@ -144,6 +155,8 @@ function Roommaze:draw()
     end
 
     self.actors[1]:draw()
+
+    love.graphics.pop()
 end
 
 return Roommaze

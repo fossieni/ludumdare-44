@@ -6,26 +6,27 @@ local Bump = require 'libs/bumps'
 
 
 players = {
-    {name="AAA", power=100, speed=25, hitbox={x=35, y=35, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
+    {name="AAA", power=100, speed=25, hitbox={x=16*4+3, y=16*5+3, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
 }
 inputManager = Inputmanager:init(players)
 bumpWorld = Bump.newWorld()
+
 RoomMaze = require 'roommaze'
 RoomMaze2 = require 'roommaze2'
 
 levels = {
     [1] = RoomMaze,
-    [2] = RoomMaze2
+    [2] = RoomMaze
 }
 
 levelIndex = 1
-
-currentLevel = levels[levelIndex]:init(bumpWorld)
+currentLevel = nil
 
 function game:init()
 end
 
 function game:enter()
+    currentLevel = levels[levelIndex]:init(bumpWorld)
     bumpWorld:add(players[1].hitbox, players[1].hitbox.x, players[1].hitbox.y, players[1].hitbox.w, players[1].hitbox.h)
 end
 
@@ -62,6 +63,9 @@ function game:update(dt)
     if inputManager.players[1]:a() then
         currentLevel:revealDoors()
     end
+    if inputManager.players[1]:b() then
+        currentLevel:barterChoosen()
+    end
 
     local actualX, actualY, cols, len = bumpWorld:move(players[1].hitbox, goalX, goalY, bumpFilter)
     DEBUG_BUFFER = DEBUG_BUFFER.."PLAYER "..players[1].hitbox.x.." "..players[1].hitbox.y.." "..players[1].hitbox.w.." "..players[1].hitbox.h.."\n"
@@ -73,6 +77,9 @@ function game:update(dt)
                 DEBUG_BUFFER = DEBUG_BUFFER.."PROGREEEEEESSSSSS!!!!! \n"
                 levelIndex = levelIndex + 1
                 currentLevel = levels[levelIndex]:init(bumpWorld)
+                actualX = currentLevel.backgroundTiles.tileWidth*4+3 
+                actualY = currentLevel.backgroundTiles.tileHeight*8+3
+                bumpWorld:update(players[1].hitbox, actualX, actualY)
             end
         end
     end
@@ -92,8 +99,10 @@ function game:draw()
     love.graphics.print("POWER "..players[1].power.."%", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-30, 10)
     love.graphics.pop()
 
+
     if DEBUG then
         love.graphics.push()
+        love.graphics.translate(currentLevel.offsetX, currentLevel.offsetY)
         love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
         love.graphics.setColor(0,1,0,0.25)
         for _, player in pairs(players) do
