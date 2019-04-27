@@ -1,34 +1,76 @@
 local Actor = {}
 Actor.__index = Actor
 
-local Tilelayer = require 'tilelayer'
-
-function Actor:init()
+function Actor:init(w, h, tileSetFile, tileSetModulo, scale)
     local actor = {}
     setmetatable(actor,Actor)
 
-    local anim = {
-        {index=1,speed=200,animation={0,1,2,3,4,5,6,7}},
+    
+    actor.pos = {x=0, y=0, offsetX=-3, offsetY=-3}
+    actor.currentAnim = 1
+    actor.width = 0
+    actor.tileWidth = w
+    actor.tileHeight = h
+    actor.tileSet = love.graphics.newImage(tileSetFile)
+    actor.tileSetModulo = tileSetModulo
+    actor.anim = {
+        {time=0, frame=0, speed=200,animation={0,1,2,3,4,5,6,7}},
     }
-    actor.sprite = Tilelayer:init(1, 1, {1},
-        16, 16, "assets/tileset_01.png", 10)
-    actor.sprite:addManualTileAnimations(anim)
-    actor.sprite:initCanvas()
+    actor.canvas = love.graphics.newCanvas(w, h)
+    actor.scaleX = scale
+    actor.scaleY = scale
+
 
     return actor
 end
 
-function Actor:moveActor(x,y)
-    self.sprite.offsetX = x
-    self.sprite.offsetY = y
+function Actor:update(dt)
+    love.graphics.push()
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.setCanvas(self.canvas)
+    local update = false
+
+    self.anim[self.currentAnim].time = self.anim[self.currentAnim].time + dt * 1000
+    if DEBUG then
+        DEBUG_BUFFER = DEBUG_BUFFER.."----- ANIM ["..self.anim[self.currentAnim].frame .." - "..self.anim[self.currentAnim].time.."]\n"
+    end
+
+    while self.anim[self.currentAnim].time > self.anim[self.currentAnim].speed do
+        update = true
+        self.anim[self.currentAnim].time = self.anim[self.currentAnim].time - self.anim[self.currentAnim].speed
+        self.anim[self.currentAnim].frame = self.anim[self.currentAnim].frame + 1
+        if self.anim[self.currentAnim].frame > #self.anim[self.currentAnim].animation then self.anim[self.currentAnim].frame = 1 end
+    end
+
+    if update then
+        self:drawTileToBuffer(self.anim[self.currentAnim].frame)
+    end
+
+    love.graphics.setCanvas()
+    love.graphics.pop()
 end
 
-function Actor:update(dt)
-    self.sprite:update(dt)
+function Actor:moveActor(x, y)
+    self.pos.x = x
+    self.pos.y = y
+end
+
+function Actor:drawTileToBuffer(index)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.clear()
+    tsetX = index % self.tileSetModulo
+    tsetY = math.floor(index/self.tileSetModulo)
+    love.graphics.draw(self.tileSet, -(tsetX*self.tileWidth), -(tsetY*self.tileHeight))
+    love.graphics.setCanvas()
 end
 
 function Actor:draw()
-    self.sprite:draw()
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.push()
+    love.graphics.scale(self.scaleX, self.scaleY)
+    love.graphics.draw(self.canvas, self.pos.x+self.pos.offsetX, self.pos.y+self.pos.offsetY)
+    love.graphics.pop()
 end
 
 return Actor

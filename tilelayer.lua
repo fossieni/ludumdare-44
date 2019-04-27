@@ -1,11 +1,6 @@
 local Tilelayer = {}
 Tilelayer.__index = Tilelayer
 
-local tile = {
-    index = index,
-    animation = animation,
-}
-
 function Tilelayer:init(mapWidth, mapHeight, data, tileWidth, tileHeight, tileSetFile, tileSetModulo, scale)
     local layer = {}
     setmetatable(layer,Tilelayer)
@@ -89,7 +84,7 @@ function Tilelayer:update(dt)
         if tile.animation then
             tile.time = tile.time + dt * 1000
             if DEBUG then
-                -- DEBUG_BUFFER = DEBUG_BUFFER.."["..tile.frame.." - "..tile.time.."]\n"
+                DEBUG_BUFFER = DEBUG_BUFFER.."["..tile.frame.." - "..tile.time.."]\n"
             end
 
             while tile.time > tile.speed do

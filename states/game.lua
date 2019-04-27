@@ -18,7 +18,6 @@ function game:init()
 end
 
 function game:enter()
-
     bumpWorld:add(players[1].hitbox, players[1].hitbox.x, players[1].hitbox.y, players[1].hitbox.w, players[1].hitbox.h)
 end
 
@@ -54,7 +53,7 @@ function game:update(dt)
             DEBUG_BUFFER = DEBUG_BUFFER.."COLISION "..col.other.type.." "..col.type.." "..col.other.x.." "..col.other.y.." "..col.other.w.." "..col.other.h.."\n"
         end
     end
-    DEBUG_BUFFER = DEBUG_BUFFER.."ACTUAL "..actualX.." "..actualY.."\n"
+    DEBUG_BUFFER = DEBUG_BUFFER.."ACTUAL "..actualX.." "..actualY.."\n\n"
     players[1].hitbox.x = actualX
     players[1].hitbox.y = actualY
     currentLevel:movePlayerActor(actualX, actualY)

@@ -68,8 +68,8 @@ function Roommaze:init(bump)
     room.showDoors = false
     room.actors = {}
 
-    local playerSprite = Actor:init()
-    table.insert(room.actors, playerSprite)
+    local playerActor = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
+    table.insert(room.actors, playerActor)
 
     return room
 end
@@ -79,19 +79,21 @@ function Roommaze:beginRoom()
 end
 
 function Roommaze:movePlayerActor(x, y)
-    DEBUG_BUFFER = DEBUG_BUFFER.."ACTORS "..table.getn(self.actors)
-    -- for i, a in pairs(self.actors) do
-    --     DEBUG_BUFFER = DEBUG_BUFFER.."----"..i.."-"..a.sprite.offsetX
-    -- end
+    self.actors[1]:moveActor(x, y)
 end
 
 function Roommaze:update(dt)
     self.backgroundTiles:update(dt)
+    DEBUG_BUFFER = DEBUG_BUFFER.."ACTORS "..table.getn(self.actors).."\n"
+    self.actors[1]:update(dt)
+    for i, a in pairs(self.actors) do
+        DEBUG_BUFFER = DEBUG_BUFFER.."---- "..i.." ("..a.pos.x..","..a.pos.x..")\n"
+    end
 end
 
 function Roommaze:draw()
-    -- DRAW ALL THE ACTORS actors:draw()
     self.backgroundTiles:draw()
+    self.actors[1]:draw()
 end
 
 return Roommaze
