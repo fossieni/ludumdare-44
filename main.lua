@@ -15,8 +15,8 @@ function love.load()
         callbacks[#callbacks+1] = k
     end
     State.registerEvents(callbacks)
-    State.switch(States.game)
 
+    State.switch(States.game)
 
 end
 
@@ -34,9 +34,12 @@ function love.draw()
     local drawtime = love.timer.getTime() - t
 
     if DEBUG then
+        love.graphics.push()
+        --love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
         love.graphics.setColor(1,1,1,1)
         love.graphics.print(DEBUG_BUFFER, 10, 30)
         love.graphics.print(tostring(love.timer.getFPS( )).." fps", 10, 20)
+        love.graphics.pop()
         DEBUG_BUFFER = ""
     end
 end

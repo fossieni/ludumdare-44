@@ -6,7 +6,7 @@ local tile = {
     animation = animation,
 }
 
-function Tilelayer:init(mapWidth, mapHeight, data, tileWidth, tileHeight, tileSetFile, tileSetModulo)
+function Tilelayer:init(mapWidth, mapHeight, data, tileWidth, tileHeight, tileSetFile, tileSetModulo, scale)
     local layer = {}
     setmetatable(layer,Tilelayer)
 
@@ -32,8 +32,8 @@ function Tilelayer:init(mapWidth, mapHeight, data, tileWidth, tileHeight, tileSe
 
     layer.offsetX = 0
     layer.offsetY = 0
-    layer.scaleX = 3
-    layer.scaleY = 3
+    layer.scaleX = scale
+    layer.scaleY = scale
 
     return layer
 end

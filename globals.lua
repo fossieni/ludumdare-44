@@ -8,7 +8,9 @@ CONFIG = {
         filter = {
             up = "nearest",
             down = "nearest"
-        }
+        },
+
+        scale = 3,
     },
 
     window = {
