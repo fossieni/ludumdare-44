@@ -1,3 +1,7 @@
+#Mac OS crap
+.DS_Store
+*.swp
+
 # Compiled Lua sources
 luac.out
 
