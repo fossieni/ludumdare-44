@@ -6,7 +6,7 @@ local Bump = require 'libs/bumps'
 
 
 players = {
-    {name="AAA", power=100, speed=25, hitbox={x=16*4+3, y=16*5+3, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
+    {name="AAA", power=100, speed=25, hitbox={x=16*5+3, y=16*8+3, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
 }
 inputManager = Inputmanager:init(players)
 bumpWorld = Bump.newWorld()

@@ -48,6 +48,8 @@ function Roommaze:init(bump)
     }
     local walkable = {[35]=true}
    
+    --room.effect = love.graphics.newShader("light.glsl")
+
     room.backgroundTiles = Tilelayer:init(
         levelData.layers[1].width, levelData.layers[1].height, levelData.layers[1].data,
         levelData.tilesets[1].tilewidth, levelData.tilesets[1].tileheight, "assets/tileset_01.png", levelData.tilesets[1].columns, CONFIG.renderer.scale)
@@ -57,8 +59,8 @@ function Roommaze:init(bump)
     room.backgroundTiles.walls = {}
     room.doors = {}
 
-    room.offsetX = (love.graphics.getWidth()/CONFIG.renderer.scale/2) - (levelData.layers[1].width*levelData.tilesets[1].tilewidth/2)
-    room.offsetY = (love.graphics.getHeight()/CONFIG.renderer.scale/2) - (levelData.layers[1].height*levelData.tilesets[1].tileheight/2)
+    room.offsetX = (love.graphics.getWidth()/2) - (levelData.layers[1].width*levelData.tilesets[1].tilewidth*CONFIG.renderer.scale/2)
+    room.offsetY = (love.graphics.getHeight()/2) - (levelData.layers[1].height*levelData.tilesets[1].tileheight*CONFIG.renderer.scale/2)
 
     for i, tile in pairs(levelData.layers[1].data) do
         if tile == 27 then
@@ -89,7 +91,7 @@ function Roommaze:init(bump)
     end
 
     room.doorsVisible = false
-    room.talkDevadv = true
+    room.barter = true
     room.actors = {}
 
     local playerActor = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
@@ -97,13 +99,13 @@ function Roommaze:init(bump)
     table.insert(room.actors, playerActor)
     table.insert(room.actors, devadv)
     room.actors[1]:moveActor(room.backgroundTiles.tileWidth*4+3, room.backgroundTiles.tileHeight*8+3)
-    room.actors[2]:moveActor(room.backgroundTiles.tileWidth*4+3, room.backgroundTiles.tileHeight*5)
+    room.actors[2]:moveActor(room.backgroundTiles.tileWidth*4, room.backgroundTiles.tileHeight*5)
 
     return room
 end
 
 function Roommaze:barterChoosen()
-    self.talkDevadv = false
+    self.barter = false
 end
 
 function Roommaze:revealDoors()
@@ -147,7 +149,8 @@ function Roommaze:draw()
     love.graphics.push()
     love.graphics.translate(self.offsetX, self.offsetY)
 
-    if self.talkDevadv == true then
+    --effect:send("diffuse", stump_diffuse)
+    if self.barter == true then
         --DRAW all the menu stuff
         self.actors[2]:draw()
     else
