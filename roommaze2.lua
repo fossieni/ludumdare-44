@@ -1,14 +1,14 @@
-local Roommaze = {}
-Roommaze.__index = Roommaze
+local Roommaze2 = {}
+Roommaze2.__index = Roommaze2
 
 local Tilelayer = require 'tilelayer'
 local Actor = require 'actor'
 
-local levelData = require 'assets/untitled'
+local levelData = require 'assets/test2'
 
-function Roommaze:init(bump)
+function Roommaze2:init(bump)
     local room = {}
-    setmetatable(room,Roommaze)
+    setmetatable(room,Roommaze2)
 
     room.bumpWorld = bump
 
@@ -86,19 +86,19 @@ function Roommaze:init(bump)
     end
 
     room.doorsVisible = false
-    room.talkDevadv = true
     room.actors = {}
 
     local playerActor = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
-    local devadv = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
     table.insert(room.actors, playerActor)
-    table.insert(room.actors, devadv)
-    room.actors[2]:moveActor(60, 60)
 
     return room
 end
 
-function Roommaze:revealDoors()
+function Roommaze2:beginRoom()
+
+end
+
+function Roommaze2:revealDoors()
     for _, tile in pairs(self.backgroundTiles.tileMap) do
         if tile.index == 26 or tile.index == 27 or tile.index == 28 then
             tile.started = true
@@ -107,7 +107,7 @@ function Roommaze:revealDoors()
     self.doorsVisible = true
 end
 
-function Roommaze:endRoom()
+function Roommaze2:endRoom()
     for _, wall in pairs(self.walls) do
       bumpWorld.remove(wall)
     end
@@ -117,15 +117,14 @@ function Roommaze:endRoom()
 end
 
 
-function Roommaze:movePlayerActor(x, y)
+function Roommaze2:movePlayerActor(x, y)
     self.actors[1]:moveActor(x, y)
 end
 
-function Roommaze:update(dt)
+function Roommaze2:update(dt)
     self.backgroundTiles:update(dt)
     DEBUG_BUFFER = DEBUG_BUFFER.."ACTORS "..table.getn(self.actors).."\n"
     self.actors[1]:update(dt)
-    self.actors[2]:update(dt)
     for i, a in pairs(self.actors) do
         DEBUG_BUFFER = DEBUG_BUFFER.."---- "..i.." ("..a.pos.x..","..a.pos.y..")\n"
     end
@@ -135,15 +134,9 @@ function Roommaze:update(dt)
     end
 end
 
-function Roommaze:draw()
-    if self.talkDevadv == true then
-        --DRAW all the menu stuff
-        self.actors[2]:draw()
-    else
-        self.backgroundTiles:draw()
-    end
-
+function Roommaze2:draw()
+    self.backgroundTiles:draw()
     self.actors[1]:draw()
 end
 
-return Roommaze
+return Roommaze2

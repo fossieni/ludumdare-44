@@ -6,13 +6,21 @@ local Bump = require 'libs/bumps'
 
 
 players = {
-    {name="AAA", speed=25, hitbox={x=35, y=35, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
+    {name="AAA", power=100, speed=25, hitbox={x=35, y=35, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
 }
 inputManager = Inputmanager:init(players)
 bumpWorld = Bump.newWorld()
 RoomMaze = require 'roommaze'
-currentLevel = RoomMaze:init(bumpWorld)
+RoomMaze2 = require 'roommaze2'
 
+levels = {
+    [1] = RoomMaze,
+    [2] = RoomMaze2
+}
+
+levelIndex = 1
+
+currentLevel = levels[levelIndex]:init(bumpWorld)
 
 function game:init()
 end
@@ -25,10 +33,14 @@ function game:update(dt)
 
     local bumpFilter = function(item, other)
         if other.type == 1 then return 'slide'
---        if other.type == 0  then return 'cross'
+            
+        elseif other.type == 10 or other.type == 11 or other.type == 12 then
+            if currentLevel.doorsVisible == true then return 'cross' 
+            else return 'slide'
+            end
 --        elseif other.type then return 'touch'
 --        elseif other.type then return 'bounce'
-        else return 'slide'
+        else return 'cross'
         end
     end
 
@@ -46,11 +58,22 @@ function game:update(dt)
         goalX = players[1].hitbox.x - (players[1].speed * dt)
     end
 
+    --TESTING STUFFFF~~~~
+    if inputManager.players[1]:a() then
+        currentLevel:revealDoors()
+    end
+
     local actualX, actualY, cols, len = bumpWorld:move(players[1].hitbox, goalX, goalY, bumpFilter)
     DEBUG_BUFFER = DEBUG_BUFFER.."PLAYER "..players[1].hitbox.x.." "..players[1].hitbox.y.." "..players[1].hitbox.w.." "..players[1].hitbox.h.."\n"
     if #cols > 0 then
         for _, col in pairs(cols) do
             DEBUG_BUFFER = DEBUG_BUFFER.."COLISION "..col.other.type.." "..col.type.." "..col.other.x.." "..col.other.y.." "..col.other.w.." "..col.other.h.."\n"
+
+            if currentLevel.doorsVisible and (col.other.type == 10 or col.other.type == 11 or col.other.type == 12) then
+                DEBUG_BUFFER = DEBUG_BUFFER.."PROGREEEEEESSSSSS!!!!! \n"
+                levelIndex = levelIndex + 1
+                currentLevel = levels[levelIndex]:init(bumpWorld)
+            end
         end
     end
     DEBUG_BUFFER = DEBUG_BUFFER.."ACTUAL "..actualX.." "..actualY.."\n\n"
@@ -62,6 +85,13 @@ end
 
 function game:draw()
     currentLevel:draw()
+
+    love.graphics.push()
+    love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
+    DEBUG_BUFFER = DEBUG_BUFFER.."POWER "..players[1].power.." "..love.graphics.getWidth()/CONFIG.renderer.scale.."\n\n"
+    love.graphics.print("POWER "..players[1].power.."%", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-30, 10)
+    love.graphics.pop()
+
     if DEBUG then
         love.graphics.push()
         love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)

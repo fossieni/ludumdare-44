@@ -53,6 +53,8 @@ function Tilelayer:addManualTileAnimations(animationData)
                 tile.frame = 1
                 tile.time = 0
                 tile.speed = animation.speed
+                tile.started = animation.started
+                tile.looping = animation.looping
                 tile.animation = animation.animation
             end
         end
@@ -66,6 +68,8 @@ function Tilelayer:addTiledAnimations(animationData)
                 tile.frame = 1
                 tile.time = 0
                 tile.speed = animation.animation[1].duration
+                tile.started = animation.started or true
+                tile.looping = animation.looping or true
                 tile.animation = {}
                 for _, frame in pairs(animation.animation) do
                     table.insert(tile.animation, frame.tileid)
@@ -90,8 +94,12 @@ function Tilelayer:update(dt)
             while tile.time > tile.speed do
                 update = true
                 tile.time = tile.time - tile.speed
-                tile.frame = tile.frame + 1
-                if tile.frame > #tile.animation then tile.frame = 1 end
+                if tile.started==true and tile.frame < #tile.animation then
+                    tile.frame = tile.frame + 1
+                end
+                if tile.looping==true then
+                    if tile.frame >= #tile.animation then tile.frame = 1 end
+                end
             end
 
             if update then

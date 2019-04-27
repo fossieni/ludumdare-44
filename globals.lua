@@ -12,15 +12,6 @@ CONFIG = {
 
         scale = 3,
     },
-
-    window = {
-        icon = nil,
-        fullscreen = false
-    },
-
-    debug = {
-
-    }
 }
 
 Lume = require 'libs.lume'
