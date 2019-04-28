@@ -6,7 +6,7 @@ local Bump = require 'libs/bumps'
 
 
 players = {
-    {name="AAA", power=100, drain=0.5, speed=125, hitbox={x=32*10+3, y=32*14+3, w=26, h=26, type=0}}
+    {name="AAA", light=5, power=100, drain=0.5, speed=125, hitbox={x=32*10+3, y=32*13+3, w=26, h=26, type=0}, best=0}
 }
 
 inputManager = Inputmanager:init(players)
@@ -14,11 +14,9 @@ bumpWorld = Bump.newWorld()
 fb = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 
 RoomMaze = require 'roommaze'
-RoomMaze2 = require 'roommaze2'
 
 levels = {
     [1] = RoomMaze,
-    [2] = RoomMaze
 }
 
 levelIndex = 1
@@ -28,6 +26,12 @@ function game:init()
 end
 
 function game:enter()
+    local items, len = bumpWorld:getItems()
+    for _, thing in pairs(items) do
+        bumpWorld:remove(thing)
+    end
+    players[1].light=5
+    players[1].power=100
     currentLevel = levels[levelIndex]:init(bumpWorld)
     bumpWorld:add(players[1].hitbox, players[1].hitbox.x, players[1].hitbox.y, players[1].hitbox.w, players[1].hitbox.h)
 end
@@ -41,8 +45,6 @@ function game:update(dt)
             if currentLevel.doorsVisible == true then return 'cross' 
             else return 'slide'
             end
---        elseif other.type then return 'touch'
---        elseif other.type then return 'bounce'
         else return 'cross'
         end
     end
@@ -65,7 +67,9 @@ function game:update(dt)
         end
 
         if inputManager.players[1]:a() then
-            players[1].power = players[1].power - currentLevel:barterChoosen()
+            local cost, light = currentLevel:barterChoosen()
+            players[1].power = players[1].power - cost
+            players[1].light = players[1].light + light
         end
     else
         local goalX = players[1].hitbox.x
@@ -97,18 +101,21 @@ function game:update(dt)
             end
         end
 
-        --TESTING STUFFFF~~~~
-        if inputManager.players[1]:b() then
-            currentLevel:revealDoors()
+        players[1].power = players[1].power - players[1].drain * dt
+        if players[1].light > 0 then
+            players[1].light = players[1].light - players[1].drain*2*dt
         end
 
-        players[1].power = players[1].power - players[1].drain * dt
         if players[1].power < 0 then
+            besttoday = levelIndex
+            currentLevel.music:stop()
             State.switch(States.gameover)
         end
 
         local actualX, actualY, cols, len = bumpWorld:move(players[1].hitbox, goalX, goalY, bumpFilter)
         DEBUG_BUFFER = DEBUG_BUFFER.."PLAYER "..players[1].hitbox.x.." "..players[1].hitbox.y.." "..players[1].hitbox.w.." "..players[1].hitbox.h.."\n"
+        DEBUG_BUFFER = DEBUG_BUFFER.."   POWER "..players[1].power.."\n"
+        DEBUG_BUFFER = DEBUG_BUFFER.."   LIGHT "..players[1].light.."\n"
         if #cols > 0 then
             for _, col in pairs(cols) do
                 DEBUG_BUFFER = DEBUG_BUFFER.."COLISION "..col.other.type.." "..col.type.." "..col.other.x.." "..col.other.y.." "..col.other.w.." "..col.other.h.."\n"
@@ -117,14 +124,23 @@ function game:update(dt)
                     DEBUG_BUFFER = DEBUG_BUFFER.."PROGREEEEEESSSSSS!!!!! \n"
                     currentLevel:endRoom()
                     levelIndex = levelIndex + 1
+                    players[1].best = levelIndex
                     currentLevel = levels[levelIndex]:init(bumpWorld)
                     actualX = currentLevel.backgroundTiles.tileWidth*10+3 
-                    actualY = currentLevel.backgroundTiles.tileHeight*14+3
+                    actualY = currentLevel.backgroundTiles.tileHeight*13+3
                     bumpWorld:update(players[1].hitbox, actualX, actualY)
+                elseif col.other.type == 2 then
+                    col.other.obj.hide = true
+                    bumpWorld:remove(col.other)
+                    players[1].power = players[1].power + 5
+                elseif col.other.type == 9 then
+                    col.other.obj.hide = true
+                    bumpWorld:remove(col.other)
+                    currentLevel:revealDoors()
                 end
             end
         end
-        DEBUG_BUFFER = DEBUG_BUFFER.."ACTUAL "..actualX.." "..actualY.."\n\n"
+        DEBUG_BUFFER = DEBUG_BUFFER.."LEVEL "..levelIndex.."\n\n"
         players[1].hitbox.x = actualX
         players[1].hitbox.y = actualY
         currentLevel:movePlayerActor(actualX, actualY)

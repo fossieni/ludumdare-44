@@ -15,13 +15,13 @@ end
 
 function menu:draw()
     love.graphics.push()
-    love.graphics.scale(CONFIG.renderer.scale+1, CONFIG.renderer.scale+1)
-    love.graphics.print("SUPER FANCY TITLE!!!!", (love.graphics.getWidth()/(CONFIG.renderer.scale+1)/2)-70, (love.graphics.getHeight()/(CONFIG.renderer.scale+1)/2)-40)
+    love.graphics.scale(CONFIG.renderer.scale+2, CONFIG.renderer.scale+2)
+    love.graphics.print("POWER AND LIGHT", (love.graphics.getWidth()/(CONFIG.renderer.scale+2)/2)-55, (love.graphics.getHeight()/(CONFIG.renderer.scale+2)/2)-40)
     love.graphics.pop()
 
     love.graphics.push()
-    love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
-    love.graphics.print("PRESS [ button ] TO CONTINUE", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-90, (love.graphics.getHeight()/CONFIG.renderer.scale/2)+10)
+    love.graphics.scale(CONFIG.renderer.scale+2, CONFIG.renderer.scale+2)
+    love.graphics.print("PRESS ( SPACE ) TO CONTINUE", (love.graphics.getWidth()/(CONFIG.renderer.scale+2)/2)-90, (love.graphics.getHeight()/(CONFIG.renderer.scale+2)/2)+10)
     love.graphics.pop()
 end
 

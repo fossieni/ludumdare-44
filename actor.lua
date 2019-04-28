@@ -1,7 +1,7 @@
 local Actor = {}
 Actor.__index = Actor
 
-function Actor:init(w, h, tileSetFile, tileSetModulo, scale)
+function Actor:init(w, h, tileSetFile, tileSetModulo, anim, scale)
     local actor = {}
     setmetatable(actor,Actor)
 
@@ -13,16 +13,11 @@ function Actor:init(w, h, tileSetFile, tileSetModulo, scale)
     actor.tileHeight = h
     actor.tileSet = love.graphics.newImage(tileSetFile)
     actor.tileSetModulo = tileSetModulo
-    actor.anim = {
-        {time=0, speed=200, frame=1, animation={0,4}},
-        {time=0, speed=200, frame=1, animation={1,5}},
-        {time=0, speed=200, frame=1, animation={2,6}},
-        {time=0, speed=200, frame=1, animation={3,7}},
-    }
+    actor.anim = anim
     actor.canvas = love.graphics.newCanvas(w, h)
     actor.scaleX = scale
     actor.scaleY = scale
-
+    actor.hide = false
 
     return actor
 end
@@ -69,11 +64,14 @@ function Actor:drawTileToBuffer(index)
 end
 
 function Actor:draw()
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.push()
-    love.graphics.scale(self.scaleX, self.scaleY)
-    love.graphics.draw(self.canvas, self.pos.x-self.pos.offsetX, self.pos.y-self.pos.offsetY)
-    love.graphics.pop()
+    if self.hide == false then
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.push()
+        love.graphics.scale(self.scaleX, self.scaleY)
+        love.graphics.draw(self.canvas, self.pos.x-self.pos.offsetX, self.pos.y-self.pos.offsetY)
+        love.graphics.pop()
+        DEBUG_BUFFER = DEBUG_BUFFER.."THING VISIBLE\n"
+    end
 end
 
 return Actor

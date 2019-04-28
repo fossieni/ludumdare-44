@@ -21,7 +21,7 @@ function love.load()
     end
     State.registerEvents(callbacks)
 
-    State.switch(States.game)
+    State.switch(States.menu)
 
 end
 

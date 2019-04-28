@@ -1,4 +1,4 @@
-RELEASE = false
+RELEASE = true
 
 DEBUG = not RELEASE
 DEBUG_BUFFER = ""

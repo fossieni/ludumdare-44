@@ -9,7 +9,7 @@ function Inputmanager:init(players)
 
     local joysticks = love.joystick.getJoysticks()
     local kbdmaps = {
-        {up="up", down="down", left="left", right="right", a="m", b="n"},
+        {up="up", down="down", left="left", right="right", a="space", b="n"},
         {up="w", down="s", left="a", right="d", a="lctrl", b="lshift"}
     }
 

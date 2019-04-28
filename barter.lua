@@ -11,7 +11,7 @@ function Barter:init(choices, scale)
 
     menu.selected = 1
     menu.selectiontimer = 0
-    menu.choices = choices or {text="NOTHING", cost=0}
+    menu.choices = choices or {text="NOTHING", cost=0, light=0}
 
     return menu
 end
@@ -26,6 +26,7 @@ function Barter:draw()
     love.graphics.scale(self.scaleX, self.scaleY)
 
     love.graphics.print("IT'S DANGEROUS TO GO ALONE. YOU SHOULD BUY SOMETHING!", -70, 0)
+    love.graphics.print("POWER DRAW IN THIS ROOM IS "..(players[1].drain*100)..", BUY NOW WITH ( SPACE )", -70, 10)
     for i, text in pairs(self.choices) do
         love.graphics.print(text.text, 0, i*10+40)
         if self.selected == i then

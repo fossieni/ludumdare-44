@@ -21,23 +21,23 @@ end
 
 function gameover:draw()
     love.graphics.push()
-    love.graphics.scale(CONFIG.renderer.scale+1, CONFIG.renderer.scale+1)
-    love.graphics.print("GAME OVER", (love.graphics.getWidth()/(CONFIG.renderer.scale+1)/2)-30, (love.graphics.getHeight()/(CONFIG.renderer.scale+1)/2)-30)
+    love.graphics.scale(CONFIG.renderer.scale+3, CONFIG.renderer.scale+3)
+    love.graphics.print("GAME OVER", (love.graphics.getWidth()/(CONFIG.renderer.scale+3)/2)-30, (love.graphics.getHeight()/(CONFIG.renderer.scale+3)/2)-30)
     love.graphics.pop()
 
     love.graphics.push()
-    love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
-    love.graphics.print("BEST TODAY", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-35, (love.graphics.getHeight()/CONFIG.renderer.scale/2-10))
+    love.graphics.scale(CONFIG.renderer.scale+1, CONFIG.renderer.scale+1)
+    love.graphics.print("BEST THIS SESSION", (love.graphics.getWidth()/(CONFIG.renderer.scale+1)/2)-57, (love.graphics.getHeight()/(CONFIG.renderer.scale+1)/2-10))
     love.graphics.pop()
 
     love.graphics.push()
     love.graphics.scale(CONFIG.renderer.scale+2, CONFIG.renderer.scale+2)
-    love.graphics.print(besttoday, (love.graphics.getWidth()/(CONFIG.renderer.scale+2)/2)-2, (love.graphics.getHeight()/(CONFIG.renderer.scale+2)/2+2))
+    love.graphics.print(besttoday, (love.graphics.getWidth()/(CONFIG.renderer.scale+2)/2)+2, (love.graphics.getHeight()/(CONFIG.renderer.scale+2)/2+2))
     love.graphics.pop()
 
     love.graphics.push()
-    love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
-    love.graphics.print("PRESS ( button ) TO CONTINUE", (love.graphics.getWidth()/CONFIG.renderer.scale/2-90), (love.graphics.getHeight()/CONFIG.renderer.scale/2)+50)
+    love.graphics.scale(CONFIG.renderer.scale+1, CONFIG.renderer.scale+1)
+    love.graphics.print("PRESS ( SPACE ) TO CONTINUE", (love.graphics.getWidth()/(CONFIG.renderer.scale+1)/2-75), (love.graphics.getHeight()/(CONFIG.renderer.scale+1)/2)+50)
     love.graphics.pop()
 end
 
