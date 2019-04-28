@@ -237,7 +237,7 @@ function Roommaze:draw()
     else
         love.graphics.setColor(1,1,1)
         love.graphics.setBlendMode("add") 
-        love.graphics.circle("fill", self.actors[1].pos.x+16, self.actors[1].pos.y+16, players[1].power+players[1].light*10)
+        love.graphics.circle("fill", self.actors[1].pos.x+16, self.actors[1].pos.y+16, players[1].power+players[1].light*10+30)
         love.graphics.setBlendMode("multiply", "premultiplied")
 
         self.backgroundTiles:draw()

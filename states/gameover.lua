@@ -37,7 +37,7 @@ function gameover:draw()
 
     love.graphics.push()
     love.graphics.scale(CONFIG.renderer.scale+1, CONFIG.renderer.scale+1)
-    love.graphics.print("PRESS ( SPACE ) TO CONTINUE", (love.graphics.getWidth()/(CONFIG.renderer.scale+1)/2-75), (love.graphics.getHeight()/(CONFIG.renderer.scale+1)/2)+50)
+    love.graphics.print("PRESS ( SPACE ) TO CONTINUE", (love.graphics.getWidth()/(CONFIG.renderer.scale+1)/2-85), (love.graphics.getHeight()/(CONFIG.renderer.scale+1)/2)+50)
     love.graphics.pop()
 end
 

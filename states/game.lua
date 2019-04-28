@@ -190,6 +190,12 @@ function game:draw()
     end
 end
 
+function game:keyreleased(key)
+    if key == "escape" then
+        love.event.quit()
+    end
+ end
+
 function game:joystickpressed(joystick, button)
     inputManager:joystickpressed(joystick, button)
 end

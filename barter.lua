@@ -25,8 +25,9 @@ function Barter:draw()
     love.graphics.push()
     love.graphics.scale(self.scaleX, self.scaleY)
 
+    love.graphics.print("I NEED OIL! BRING ME OIL AND I WILL LET YOU OUT... BUT", -70, -10)
     love.graphics.print("IT'S DANGEROUS TO GO ALONE. YOU SHOULD BUY SOMETHING!", -70, 0)
-    love.graphics.print("POWER DRAW IN THIS ROOM IS "..(players[1].drain*100)..", BUY NOW WITH ( SPACE )", -70, 10)
+    love.graphics.print("IT WILL ONLY COST YOU YOUR LIFE, BUY NOW WITH ( SPACE )", -70, 10)
     for i, text in pairs(self.choices) do
         love.graphics.print(text.text, 0, i*10+40)
         if self.selected == i then
