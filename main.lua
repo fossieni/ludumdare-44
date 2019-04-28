@@ -9,6 +9,8 @@ States = {
 
 besttoday = 0
 
+math.randomseed( os.time() )
+
 function love.load()
     --love.window.setIcon(love.image.newImageData(CONFIG.window.icon))
     love.graphics.setDefaultFilter(CONFIG.renderer.filter.down, CONFIG.renderer.filter.up, 1)

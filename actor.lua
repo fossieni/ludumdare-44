@@ -14,7 +14,10 @@ function Actor:init(w, h, tileSetFile, tileSetModulo, scale)
     actor.tileSet = love.graphics.newImage(tileSetFile)
     actor.tileSetModulo = tileSetModulo
     actor.anim = {
-        {time=0, frame=0, speed=200,animation={0,1,2,3,4,5,6,7}},
+        {time=0, speed=200, frame=1, animation={0,4}},
+        {time=0, speed=200, frame=1, animation={1,5}},
+        {time=0, speed=200, frame=1, animation={2,6}},
+        {time=0, speed=200, frame=1, animation={3,7}},
     }
     actor.canvas = love.graphics.newCanvas(w, h)
     actor.scaleX = scale
@@ -32,7 +35,7 @@ function Actor:update(dt)
 
     self.anim[self.currentAnim].time = self.anim[self.currentAnim].time + dt * 1000
     if DEBUG then
-        DEBUG_BUFFER = DEBUG_BUFFER.."----- ANIM ["..self.anim[self.currentAnim].frame .." - "..self.anim[self.currentAnim].time.."]\n"
+        DEBUG_BUFFER = DEBUG_BUFFER.."----- ANIM ["..self.anim[self.currentAnim].frame.." - "..self.anim[self.currentAnim].animation[self.anim[self.currentAnim].frame].." - "..self.anim[self.currentAnim].time.."]\n"
     end
 
     while self.anim[self.currentAnim].time > self.anim[self.currentAnim].speed do
@@ -43,7 +46,7 @@ function Actor:update(dt)
     end
 
     if update then
-        self:drawTileToBuffer(self.anim[self.currentAnim].frame)
+        self:drawTileToBuffer(self.anim[self.currentAnim].animation[self.anim[self.currentAnim].frame])
     end
 
     love.graphics.setCanvas()

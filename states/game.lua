@@ -6,11 +6,12 @@ local Bump = require 'libs/bumps'
 
 
 players = {
-    {name="AAA", power=100, drain=0.5, speed=25, hitbox={x=16*5+3, y=16*8+3, w=10, h=10, type=0}}
+    {name="AAA", power=100, drain=0.5, speed=125, hitbox={x=32*10+3, y=32*14+3, w=26, h=26, type=0}}
 }
 
 inputManager = Inputmanager:init(players)
 bumpWorld = Bump.newWorld()
+fb = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 
 RoomMaze = require 'roommaze'
 RoomMaze2 = require 'roommaze2'
@@ -71,13 +72,29 @@ function game:update(dt)
         local goalY = players[1].hitbox.y
         if inputManager.players[1]:down() then
             goalY = players[1].hitbox.y + (players[1].speed * dt)
+            if currentLevel.actors[1].currentAnim ~= 1 then
+                currentLevel.actors[1].currentAnim = 1
+                currentLevel.actors[1].anim[1].time = currentLevel.actors[1].anim[1].speed
+            end
         elseif inputManager.players[1]:up() then
             goalY = players[1].hitbox.y - (players[1].speed * dt)
+            if currentLevel.actors[1].currentAnim ~= 2 then
+                currentLevel.actors[1].currentAnim = 2
+                currentLevel.actors[1].anim[2].time = currentLevel.actors[1].anim[2].speed
+            end
         end
         if inputManager.players[1]:right() then
             goalX = players[1].hitbox.x + (players[1].speed * dt)
+            if currentLevel.actors[1].currentAnim ~= 3 then
+                currentLevel.actors[1].currentAnim = 3
+                currentLevel.actors[1].anim[3].time = currentLevel.actors[1].anim[3].speed
+            end
         elseif inputManager.players[1]:left() then
             goalX = players[1].hitbox.x - (players[1].speed * dt)
+            if currentLevel.actors[1].currentAnim ~= 4 then
+                currentLevel.actors[1].currentAnim = 4
+                currentLevel.actors[1].anim[4].time = currentLevel.actors[1].anim[4].speed
+            end
         end
 
         --TESTING STUFFFF~~~~
@@ -98,10 +115,11 @@ function game:update(dt)
 
                 if currentLevel.doorsVisible and (col.other.type == 10 or col.other.type == 11 or col.other.type == 12) then
                     DEBUG_BUFFER = DEBUG_BUFFER.."PROGREEEEEESSSSSS!!!!! \n"
+                    currentLevel:endRoom()
                     levelIndex = levelIndex + 1
                     currentLevel = levels[levelIndex]:init(bumpWorld)
-                    actualX = currentLevel.backgroundTiles.tileWidth*5+3 
-                    actualY = currentLevel.backgroundTiles.tileHeight*8+3
+                    actualX = currentLevel.backgroundTiles.tileWidth*10+3 
+                    actualY = currentLevel.backgroundTiles.tileHeight*14+3
                     bumpWorld:update(players[1].hitbox, actualX, actualY)
                 end
             end
@@ -115,7 +133,27 @@ function game:update(dt)
 end
 
 function game:draw()
+    love.graphics.push()
+    --love.graphics.setCanvas(fb)
+    --love.graphics.clear(1/256*32, 1/256*32, 1/256*32,1)
+
+    -- if currentLevel.effect then
+    --     love.graphics.setShader(currentLevel.effect)
+    --     currentLevel.effect:send("diffuse", fb)
+    --     currentLevel.effect:send("light_color", {0.9, 0.4, 0.4}, {0.0, 0.9, 0.0})
+    --     currentLevel.effect:send("light_strength", 0.7, 0.7)
+    --     currentLevel.effect:send("ambient_color", {0.2, 0.2, 0.9})
+    --     currentLevel.effect:send("ambient_strength", 0.5)
+    -- end
+
     currentLevel:draw()
+
+    -- if currentLevel.effect then
+    --     love.graphics.setShader()
+    -- end
+    -- love.graphics.setCanvas()
+    love.graphics.pop()
+    -- love.graphics.draw(fb)
 
     love.graphics.push()
     love.graphics.scale(CONFIG.renderer.scale+2, CONFIG.renderer.scale+2)

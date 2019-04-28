@@ -24,10 +24,12 @@ function Barter:draw()
     love.graphics.setColor(1,1,1,1)
     love.graphics.push()
     love.graphics.scale(self.scaleX, self.scaleY)
+
+    love.graphics.print("IT'S DANGEROUS TO GO ALONE. YOU SHOULD BUY SOMETHING!", -70, 0)
     for i, text in pairs(self.choices) do
-        love.graphics.print(text.text, -30, i*10+40)
+        love.graphics.print(text.text, 0, i*10+40)
         if self.selected == i then
-            love.graphics.print("+", -50, i*10+40)
+            love.graphics.print("+", -20, i*10+40)
         end
     end
     love.graphics.pop()
