@@ -3,8 +3,11 @@ require 'globals'
 
 States = {
     menu = require 'states.menu',
-    game = require 'states.game'
+    game = require 'states.game',
+    gameover = require 'states.gameover'
 }
+
+besttoday = 0
 
 function love.load()
     --love.window.setIcon(love.image.newImageData(CONFIG.window.icon))

@@ -68,8 +68,8 @@ function Tilelayer:addTiledAnimations(animationData)
                 tile.frame = 1
                 tile.time = 0
                 tile.speed = animation.animation[1].duration
-                tile.started = animation.started or true
-                tile.looping = animation.looping or true
+                tile.started = animation.started or false
+                tile.looping = animation.looping or false
                 tile.animation = {}
                 for _, frame in pairs(animation.animation) do
                     table.insert(tile.animation, frame.tileid)

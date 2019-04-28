@@ -5,7 +5,7 @@ local Tilelayer = require 'tilelayer'
 local Actor = require 'actor'
 local Barter = require 'barter'
 
-local levelData = require 'assets/untitled'
+local levelData = require 'assets/randMaze'
 
 function Roommaze:init(bump)
     local room = {}
@@ -47,15 +47,15 @@ function Roommaze:init(bump)
             }
         },
     }
-    local walkable = {[35]=true}
+    local walkable = {[0]=true}
    
     --room.effect = love.graphics.newShader("light.glsl")
 
     room.backgroundTiles = Tilelayer:init(
         levelData.layers[1].width, levelData.layers[1].height, levelData.layers[1].data,
-        levelData.tilesets[1].tilewidth, levelData.tilesets[1].tileheight, "assets/tileset_01.png", levelData.tilesets[1].columns, CONFIG.renderer.scale)
-    room.backgroundTiles:addTiledAnimations(anim2)
-    room.backgroundTiles:addManualTileAnimations(anim)
+        levelData.tilesets[1].tilewidth, levelData.tilesets[1].tileheight, "assets/randMazeWall.png", levelData.tilesets[1].columns, CONFIG.renderer.scale)
+    room.backgroundTiles:addTiledAnimations(levelData.tilesets[1].tiles)
+    --room.backgroundTiles:addManualTileAnimations()
     room.backgroundTiles:initCanvas()
     room.backgroundTiles.walls = {}
     room.doors = {}
@@ -64,19 +64,25 @@ function Roommaze:init(bump)
     room.offsetY = (love.graphics.getHeight()/2) - (levelData.layers[1].height*levelData.tilesets[1].tileheight*CONFIG.renderer.scale/2)
 
     for i, tile in pairs(levelData.layers[1].data) do
-        if tile == 27 then
+        if tile == 65 then
             local doorx = ((i-1) % room.backgroundTiles.mapWidth) * room.backgroundTiles.tileWidth
             local doory = math.floor((i-1) / room.backgroundTiles.mapWidth) * room.backgroundTiles.tileHeight
             local door = {x=doorx, y=doory, w=room.backgroundTiles.tileWidth, h=room.backgroundTiles.tileHeight, type=10}
             table.insert(room.doors, door)
             room.bumpWorld:add(door, door.x, door.y, door.w, door.h)
-        elseif tile == 28 then
+        elseif tile == 69 then
             local doorx = ((i-1) % room.backgroundTiles.mapWidth) * room.backgroundTiles.tileWidth
             local doory = math.floor((i-1) / room.backgroundTiles.mapWidth) * room.backgroundTiles.tileHeight
             local door = {x=doorx, y=doory, w=room.backgroundTiles.tileWidth, h=room.backgroundTiles.tileHeight, type=11}
             table.insert(room.doors, door)
             room.bumpWorld:add(door, door.x, door.y, door.w, door.h)
-        elseif tile == 29 then
+        elseif tile == 73 then
+            local doorx = ((i-1) % room.backgroundTiles.mapWidth) * room.backgroundTiles.tileWidth
+            local doory = math.floor((i-1) / room.backgroundTiles.mapWidth) * room.backgroundTiles.tileHeight
+            local door = {x=doorx, y=doory, w=room.backgroundTiles.tileWidth, h=room.backgroundTiles.tileHeight, type=12}
+            table.insert(room.doors, door)
+            room.bumpWorld:add(door, door.x, door.y, door.w, door.h)
+        elseif tile == 77 then
             local doorx = ((i-1) % room.backgroundTiles.mapWidth) * room.backgroundTiles.tileWidth
             local doory = math.floor((i-1) / room.backgroundTiles.mapWidth) * room.backgroundTiles.tileHeight
             local door = {x=doorx, y=doory, w=room.backgroundTiles.tileWidth, h=room.backgroundTiles.tileHeight, type=12}
@@ -117,7 +123,7 @@ end
 
 function Roommaze:revealDoors()
     for _, tile in pairs(self.backgroundTiles.tileMap) do
-        if tile.index == 26 or tile.index == 27 or tile.index == 28 then
+        if tile.animation and tile.started == false then
             tile.started = true
         end
     end

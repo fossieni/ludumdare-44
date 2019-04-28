@@ -81,12 +81,13 @@ function game:update(dt)
         end
 
         --TESTING STUFFFF~~~~
-        if inputManager.players[1]:a() then
+        if inputManager.players[1]:b() then
             currentLevel:revealDoors()
         end
 
-        if currentLevel.barter == false then
-            players[1].power = players[1].power - players[1].drain * dt
+        players[1].power = players[1].power - players[1].drain * dt
+        if players[1].power < 0 then
+            State.switch(States.gameover)
         end
 
         local actualX, actualY, cols, len = bumpWorld:move(players[1].hitbox, goalX, goalY, bumpFilter)
@@ -117,9 +118,9 @@ function game:draw()
     currentLevel:draw()
 
     love.graphics.push()
-    love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
-    DEBUG_BUFFER = DEBUG_BUFFER.."POWER "..players[1].power.." "..love.graphics.getWidth()/CONFIG.renderer.scale.."\n\n"
-    love.graphics.print("POWER "..math.floor(players[1].power).."%", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-30, 10)
+    love.graphics.scale(CONFIG.renderer.scale+2, CONFIG.renderer.scale+2)
+    DEBUG_BUFFER = DEBUG_BUFFER.."POWER "..players[1].power.." "..love.graphics.getWidth()/(CONFIG.renderer.scale+2).."\n\n"
+    love.graphics.print("POWER "..math.floor(players[1].power).."%", (love.graphics.getWidth()/(CONFIG.renderer.scale+2)/2)-30, 10)
     love.graphics.pop()
 
 

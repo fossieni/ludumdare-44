@@ -10,7 +10,7 @@ CONFIG = {
             down = "nearest"
         },
 
-        scale = 3,
+        scale = 1,
     },
 }
 

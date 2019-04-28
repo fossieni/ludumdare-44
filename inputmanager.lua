@@ -46,7 +46,7 @@ function Inputmanager:init(players)
                 playerctl.down = function () return love.keyboard.isDown(playerctl.controller.down) end
                 playerctl.left = function () return love.keyboard.isDown(playerctl.controller.left) end
                 playerctl.right = function () return love.keyboard.isDown(playerctl.controller.right) end
-                playerctl.a = function () return love.keyboard.isDown(playerctl.controller.a) end
+                playerctl.a = function () playerctl.yep=true return love.keyboard.isDown(playerctl.controller.a) end
                 playerctl.b = function () return love.keyboard.isDown(playerctl.controller.b) end
             end
         end
@@ -73,17 +73,5 @@ function Inputmanager:update(dt)
         end
     end
 end
-
-
-
-function Inputmanager:joystickadded(joystick)
-end
-function Inputmanager:joystickremoved(joystick)
-end
-function Inputmanager:joystickpressed(joystick, button)
-end
-function Inputmanager:joystickreleased(joystick, button)
-end
-
 
 return Inputmanager

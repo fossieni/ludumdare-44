@@ -6,8 +6,8 @@ function Barter:init(choices, scale)
     setmetatable(menu,Barter)
 
     menu.pos = {x=0, y=0}
-    menu.scaleX = scale
-    menu.scaleY = scale
+    menu.scaleX = scale+2
+    menu.scaleY = scale+2
 
     menu.selected = 1
     menu.selectiontimer = 0
