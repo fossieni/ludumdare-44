@@ -6,8 +6,9 @@ local Bump = require 'libs/bumps'
 
 
 players = {
-    {name="AAA", power=100, speed=25, hitbox={x=16*5+3, y=16*8+3, w=10, h=10, type=0}, gfxoffset={x=-11, y=-11}}
+    {name="AAA", power=100, drain=0.5, speed=25, hitbox={x=16*5+3, y=16*8+3, w=10, h=10, type=0}}
 }
+
 inputManager = Inputmanager:init(players)
 bumpWorld = Bump.newWorld()
 
@@ -46,47 +47,69 @@ function game:update(dt)
     end
 
     inputManager:update(dt)
-    local goalX = players[1].hitbox.x
-    local goalY = players[1].hitbox.y
-    if inputManager.players[1]:down() then
-        goalY = players[1].hitbox.y + (players[1].speed * dt)
-    elseif inputManager.players[1]:up() then
-        goalY = players[1].hitbox.y - (players[1].speed * dt)
-    end
-    if inputManager.players[1]:right() then
-        goalX = players[1].hitbox.x + (players[1].speed * dt)
-    elseif inputManager.players[1]:left() then
-        goalX = players[1].hitbox.x - (players[1].speed * dt)
-    end
 
-    --TESTING STUFFFF~~~~
-    if inputManager.players[1]:a() then
-        currentLevel:revealDoors()
-    end
-    if inputManager.players[1]:b() then
-        currentLevel:barterChoosen()
-    end
-
-    local actualX, actualY, cols, len = bumpWorld:move(players[1].hitbox, goalX, goalY, bumpFilter)
-    DEBUG_BUFFER = DEBUG_BUFFER.."PLAYER "..players[1].hitbox.x.." "..players[1].hitbox.y.." "..players[1].hitbox.w.." "..players[1].hitbox.h.."\n"
-    if #cols > 0 then
-        for _, col in pairs(cols) do
-            DEBUG_BUFFER = DEBUG_BUFFER.."COLISION "..col.other.type.." "..col.type.." "..col.other.x.." "..col.other.y.." "..col.other.w.." "..col.other.h.."\n"
-
-            if currentLevel.doorsVisible and (col.other.type == 10 or col.other.type == 11 or col.other.type == 12) then
-                DEBUG_BUFFER = DEBUG_BUFFER.."PROGREEEEEESSSSSS!!!!! \n"
-                levelIndex = levelIndex + 1
-                currentLevel = levels[levelIndex]:init(bumpWorld)
-                actualX = currentLevel.backgroundTiles.tileWidth*4+3 
-                actualY = currentLevel.backgroundTiles.tileHeight*8+3
-                bumpWorld:update(players[1].hitbox, actualX, actualY)
+    if currentLevel.barter == true then
+        if currentLevel.menu.selectiontimer > 300 then
+            if inputManager.players[1]:down() then
+                if currentLevel.menu.selected < #currentLevel.menu.choices then
+                    currentLevel.menu.selectiontimer = 0
+                    currentLevel.menu.selected = currentLevel.menu.selected + 1
+                end
+            elseif inputManager.players[1]:up() then
+                if currentLevel.menu.selected > 1 then
+                    currentLevel.menu.selectiontimer = 0
+                    currentLevel.menu.selected = currentLevel.menu.selected - 1
+                end
             end
         end
+
+        if inputManager.players[1]:a() then
+            players[1].power = players[1].power - currentLevel:barterChoosen()
+        end
+    else
+        local goalX = players[1].hitbox.x
+        local goalY = players[1].hitbox.y
+        if inputManager.players[1]:down() then
+            goalY = players[1].hitbox.y + (players[1].speed * dt)
+        elseif inputManager.players[1]:up() then
+            goalY = players[1].hitbox.y - (players[1].speed * dt)
+        end
+        if inputManager.players[1]:right() then
+            goalX = players[1].hitbox.x + (players[1].speed * dt)
+        elseif inputManager.players[1]:left() then
+            goalX = players[1].hitbox.x - (players[1].speed * dt)
+        end
+
+        --TESTING STUFFFF~~~~
+        if inputManager.players[1]:a() then
+            currentLevel:revealDoors()
+        end
+
+        if currentLevel.barter == false then
+            players[1].power = players[1].power - players[1].drain * dt
+        end
+
+        local actualX, actualY, cols, len = bumpWorld:move(players[1].hitbox, goalX, goalY, bumpFilter)
+        DEBUG_BUFFER = DEBUG_BUFFER.."PLAYER "..players[1].hitbox.x.." "..players[1].hitbox.y.." "..players[1].hitbox.w.." "..players[1].hitbox.h.."\n"
+        if #cols > 0 then
+            for _, col in pairs(cols) do
+                DEBUG_BUFFER = DEBUG_BUFFER.."COLISION "..col.other.type.." "..col.type.." "..col.other.x.." "..col.other.y.." "..col.other.w.." "..col.other.h.."\n"
+
+                if currentLevel.doorsVisible and (col.other.type == 10 or col.other.type == 11 or col.other.type == 12) then
+                    DEBUG_BUFFER = DEBUG_BUFFER.."PROGREEEEEESSSSSS!!!!! \n"
+                    levelIndex = levelIndex + 1
+                    currentLevel = levels[levelIndex]:init(bumpWorld)
+                    actualX = currentLevel.backgroundTiles.tileWidth*5+3 
+                    actualY = currentLevel.backgroundTiles.tileHeight*8+3
+                    bumpWorld:update(players[1].hitbox, actualX, actualY)
+                end
+            end
+        end
+        DEBUG_BUFFER = DEBUG_BUFFER.."ACTUAL "..actualX.." "..actualY.."\n\n"
+        players[1].hitbox.x = actualX
+        players[1].hitbox.y = actualY
+        currentLevel:movePlayerActor(actualX, actualY)
     end
-    DEBUG_BUFFER = DEBUG_BUFFER.."ACTUAL "..actualX.." "..actualY.."\n\n"
-    players[1].hitbox.x = actualX
-    players[1].hitbox.y = actualY
-    currentLevel:movePlayerActor(actualX, actualY)
     currentLevel:update(dt)
 end
 
@@ -96,7 +119,7 @@ function game:draw()
     love.graphics.push()
     love.graphics.scale(CONFIG.renderer.scale, CONFIG.renderer.scale)
     DEBUG_BUFFER = DEBUG_BUFFER.."POWER "..players[1].power.." "..love.graphics.getWidth()/CONFIG.renderer.scale.."\n\n"
-    love.graphics.print("POWER "..players[1].power.."%", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-30, 10)
+    love.graphics.print("POWER "..math.floor(players[1].power).."%", (love.graphics.getWidth()/CONFIG.renderer.scale/2)-30, 10)
     love.graphics.pop()
 
 

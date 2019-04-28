@@ -1,7 +1,7 @@
 local Barter = {}
 Barter.__index = Barter
 
-function Barter:init(w, h, tileSetFile, tileSetModulo, scale)
+function Barter:init(choices, scale)
     local menu = {}
     setmetatable(menu,Barter)
 
@@ -9,17 +9,27 @@ function Barter:init(w, h, tileSetFile, tileSetModulo, scale)
     menu.scaleX = scale
     menu.scaleY = scale
 
+    menu.selected = 1
+    menu.selectiontimer = 0
+    menu.choices = choices or {text="NOTHING", cost=0}
+
     return menu
 end
 
 function Barter:update(dt)
+    self.selectiontimer = self.selectiontimer + dt * 1000
 end
 
 function Barter:draw()
     love.graphics.setColor(1,1,1,1)
     love.graphics.push()
     love.graphics.scale(self.scaleX, self.scaleY)
-    love.graphics.draw(self.canvas, self.pos.x+self.pos.offsetX, self.pos.y+self.pos.offsetY)
+    for i, text in pairs(self.choices) do
+        love.graphics.print(text.text, -30, i*10+40)
+        if self.selected == i then
+            love.graphics.print("+", -50, i*10+40)
+        end
+    end
     love.graphics.pop()
 end
 

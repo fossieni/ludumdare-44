@@ -3,6 +3,7 @@ Roommaze.__index = Roommaze
 
 local Tilelayer = require 'tilelayer'
 local Actor = require 'actor'
+local Barter = require 'barter'
 
 local levelData = require 'assets/untitled'
 
@@ -92,20 +93,26 @@ function Roommaze:init(bump)
 
     room.doorsVisible = false
     room.barter = true
+    room.menu = Barter:init({
+      {text="NOTHING", cost=0},
+      {text="A LIGHT BULB            25 POWER", cost=25},
+      {text="A BIG LIGHT BULB        50 POWER", cost=50},
+    }, CONFIG.renderer.scale)
     room.actors = {}
 
     local playerActor = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
     local devadv = Actor:init(16,16,"assets/tileset_01.png",16,CONFIG.renderer.scale)
     table.insert(room.actors, playerActor)
     table.insert(room.actors, devadv)
-    room.actors[1]:moveActor(room.backgroundTiles.tileWidth*4+3, room.backgroundTiles.tileHeight*8+3)
-    room.actors[2]:moveActor(room.backgroundTiles.tileWidth*4, room.backgroundTiles.tileHeight*5)
+    room.actors[1]:moveActor(room.backgroundTiles.tileWidth*5+3, room.backgroundTiles.tileHeight*8+3)
+    room.actors[2]:moveActor(room.backgroundTiles.tileWidth*5+3, room.backgroundTiles.tileHeight*2)
 
     return room
 end
 
 function Roommaze:barterChoosen()
     self.barter = false
+    return self.menu.choices[self.menu.selected].cost
 end
 
 function Roommaze:revealDoors()
@@ -133,6 +140,7 @@ end
 
 function Roommaze:update(dt)
     self.backgroundTiles:update(dt)
+    self.menu:update(dt)
     DEBUG_BUFFER = DEBUG_BUFFER.."ACTORS "..table.getn(self.actors).."\n"
     self.actors[1]:update(dt)
     self.actors[2]:update(dt)
@@ -152,6 +160,7 @@ function Roommaze:draw()
     --effect:send("diffuse", stump_diffuse)
     if self.barter == true then
         --DRAW all the menu stuff
+        self.menu:draw()
         self.actors[2]:draw()
     else
         self.backgroundTiles:draw()
